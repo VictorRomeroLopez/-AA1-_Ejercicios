@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\CodigoChat1solo.cpp">
+    <ClCompile Include="..\src\[AA1]_Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

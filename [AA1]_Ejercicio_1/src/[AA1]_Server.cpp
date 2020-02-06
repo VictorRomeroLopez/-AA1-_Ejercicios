@@ -3,21 +3,45 @@
 #include <iostream>
 #include <vector>
 
+sf::TcpListener dispatcher;
+
 void print(std::string textToPrint) {
 	std::cout << textToPrint << std::endl;
 }
 
-void client(sf::TcpSocket* socket) {
+struct Data {
+public:
+	sf::TcpSocket* socket;
+	std::vector<sf::TcpSocket*> incoming;
 
-	print("I'm connected " + socket->getRemoteAddress().toString());
-	while (true) {
-
+	Data(sf::TcpSocket*  _socket, std::vector<sf::TcpSocket*> _incoming) {
+		socket = _socket;
+		incoming = _incoming;
 	}
-}
+	
+	void client() {
+		print("I'm connected " + socket->getRemoteAddress().toString());
+
+		while (true) {
+			sf::Packet packet;
+			socket->receive(packet);
+			std::string packetData;
+			packet >> packetData;
+			print(packetData);
+			std::cout << incoming.size() << std::endl;
+			for (int i = 0; i < incoming.size(); i++) {
+				incoming[i]->send(packet);
+			}
+		}
+		print("Dissconected");
+	}
+};
+
 
 int main()
 {
 	std::string serverMethod;
+	std::vector<sf::TcpSocket*> incoming;
 
 	do {
 		print("Selecciona un metode:");
@@ -26,9 +50,6 @@ int main()
 		print("\t3. Blocking + SocketSelector");
 		std::cin >> serverMethod;
 	} while (serverMethod != "1" && serverMethod != "2" && serverMethod != "3");
-
-	sf::TcpListener dispatcher;
-	std::vector<sf::TcpSocket*> incoming;
 
 	dispatcher.setBlocking(!(std::stoi(serverMethod) == 2));
 	int port = 50000;
@@ -53,18 +74,20 @@ int main()
 		}
 		else 
 		{
+			incoming.push_back(socket);
 			switch (std::stoi(serverMethod)) {
-			case 1: {
-				sf::Thread thread(&client, socket);
+			case 1: 
+			{
+				Data* data = new Data(socket, incoming);
+				sf::Thread thread( &Data::client, data);
 				thread.launch();
-				}
 				break;
+			}
 			case 2:
 				break;
 			case 3:
 				break;
 			}
-			incoming.push_back(socket);
 		}
 	}
 }
