@@ -4,7 +4,11 @@
 #include <iostream>
 #include <vector>
 
-#define MAX_MENSAJES 30
+const int MAX_MENSAJES = 30;
+
+const int PORT_SERVER  = 50000;
+const std::string IP_SERVER = "127.0.0.1";
+const std::string FOLDER_RESOURCES  = "../resources";
 
 void print(std::string textToPrint) {
 	std::cout << textToPrint << std::endl;
@@ -20,7 +24,7 @@ int main()
 	window.create(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Chat");
 
 	sf::Font font;
-	if (!font.loadFromFile("../resources/courbd.ttf"))
+	if (!font.loadFromFile( FOLDER_RESOURCES + "/courbd.ttf"))
 	{
 		std::cout << "Can't load the font file" << std::endl;
 	}
@@ -41,7 +45,7 @@ int main()
 	separator.setPosition(0, 550);
 	
 	sf::TcpSocket socket;
-	sf::Socket::Status status = socket.connect("127.0.0.1", 50000, sf::seconds(5.f));
+	sf::Socket::Status status = socket.connect(IP_SERVER, PORT_SERVER, sf::seconds(5.f));
 
 	if (status != sf::Socket::Done) {
 		print("No se ha podido conectar");
