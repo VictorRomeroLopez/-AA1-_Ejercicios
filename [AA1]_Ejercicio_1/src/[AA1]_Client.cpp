@@ -8,7 +8,7 @@
 const int MAX_MENSAJES = 30;
 
 const int PORT_SERVER  = 50000;
-const std::string IP_SERVER = "127.0.0.1";
+const std::string IP_SERVER = "192.168.1.61";
 const std::string FOLDER_RESOURCES  = "../../resources";
 
 sf::TcpSocket socket;
